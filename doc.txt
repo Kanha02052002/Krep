@@ -1,158 +1,95 @@
-from pyvis.network import Network
-import json
 import os
+import json
+from flask import Flask, render_template, request, redirect, url_for
+from werkzeug.utils import secure_filename
+import fitz
+from data_preprocess import process_syllabus_to_json  # Import the function from data_process.py
+from graph_gen_test import save_visualization  # Import the save_visualization function from graph_gen_test.py
 
-GRAPH_DIR = 'graph_format'
+# Initialize Flask app
+app = Flask(__name__)
 
-def load_course_data(json_path):
-    """Load course data from JSON file"""
+UPLOAD_DIR = "uploads"
+JSON_DIR = 'json_format'
+GRAPH_DIR = 'graph_format'  # This should match the GRAPH_DIR in graph_gen_test.py
+
+# Directory for storing uploaded files
+if not os.path.exists(UPLOAD_DIR):
+    os.makedirs(UPLOAD_DIR)
+
+if not os.path.exists(JSON_DIR):
+    os.makedirs(JSON_DIR)
+
+if not os.path.exists(GRAPH_DIR):
+    os.makedirs(GRAPH_DIR)
+
+# Allowed file extensions for upload
+ALLOWED_EXTENSIONS = {'pdf'}
+
+# Clear all folders on reset
+def reset_func(folder_path):
+    for file in os.listdir(folder_path):
+        file_path = os.path.join(folder_path, file)
+        if os.path.isfile(file_path):
+            os.remove(file_path)
+    print('Folder reset')
+
+# Function to check allowed file extensions
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+# Function to extract text from PDF
+def extract_pdf_content(file_path):
+    text = ""
     try:
-        with open(json_path, 'r', encoding='utf-8') as file:
-            return json.load(file)
-    except FileNotFoundError:
-        print(f"Error: File not found at {json_path}")
-        return None
-    except json.JSONDecodeError:
-        print(f"Error: Invalid JSON format in {json_path}")
-        return None
+        with fitz.open(file_path) as pdf:
+            for page in pdf:
+                text += page.get_text()
     except Exception as e:
-        print(f"Error reading file: {str(e)}")
-        return None
+        print(f"Error while processing PDF: {e}")
+    return text
 
-def create_interactive_graph(data):
-    # Create a new network
-    net = Network(height="750px", width="100%", bgcolor="#ffffff", font_color="black")
-    
-    # Configure physics
-    net.force_atlas_2based()
-    net.toggle_physics(True)
-    
-    # Add center node (course title)
-    net.add_node(data["course_title"], 
-                 label=data["course_title"],
-                 color="#ff9999",
-                 size=50,
-                 font={'size': 30, 'face': 'Arial'},
-                 title=f"Course Code: {data['course_code']}")
-    
-    # Add module nodes and their topics
-    checklist_html = "<div style='position: absolute; top: 20px; left: 20px; background-color: white; padding: 10px; border-radius: 5px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);'>"
-    checklist_html += "<h3>Modules and Topics</h3>"
-    
-    for module in data["modules"]:
-        module_id = module["module_number"]
-        module_label = f"{module['module_number']}\n{module['module_name']}"
-        
-        # Add module node
-        net.add_node(module_id,
-                     label=module_label,
-                     color="#99ff99",
-                     size=40,
-                     font={'size': 20, 'face': 'Arial'},
-                     title=module['module_name'])
-        
-        # Connect module to center
-        net.add_edge(data["course_title"], module_id, 
-                     length=200,
-                     color={'color': 'gray'})
+# Route for file upload page
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        file = request.files['file']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(UPLOAD_DIR, filename)
+            file.save(file_path)
 
-        # Add topic nodes and checkboxes to the checklist
-        for i, topic in enumerate(module["topics"]):
-            topic_id = f"{module_id}_topic_{i}"
-            
-            # Format topic text for better display
-            topic_words = topic.split()
-            formatted_topic = '\n'.join([' '.join(topic_words[i:i+5]) 
-                                       for i in range(0, len(topic_words), 5)])
+            # Extract PDF content and process the text to convert it into JSON
+            extracted_text = extract_pdf_content(file_path)
+            # Process the extracted text and convert it to JSON format
+            syllabus_json = process_syllabus_to_json(extracted_text)
 
-            # Add topic node
-            net.add_node(topic_id,
-                         label=formatted_topic,
-                         color="#9999ff",
-                         size=30,
-                         font={'size': 15, 'face': 'Arial'},
-                         title=topic)
-            
-            # Connect topic to its module
-            net.add_edge(module_id, topic_id,
-                         length=150,
-                         color={'color': 'gray'})
+            # Save JSON to a file in the JSON_DIR
+            json_file_path = os.path.join(JSON_DIR, 'syllabus.json')
+            with open(json_file_path, 'w') as json_file:
+                json.dump(syllabus_json, json_file, indent=4)
 
-            # Add checkbox for topic to checklist
-            checklist_html += f"<input type='checkbox' id='{topic_id}_checkbox' onclick='toggleNode(\"{topic_id}\")'/> Topic: {formatted_topic}<br>"
+            # After processing JSON, generate the graph visualization and save it
+            save_visualization(json_file_path)  # This will save the visualization in the GRAPH_DIR
 
-        # Add checkbox for module to checklist
-        checklist_html += f"<div><input type='checkbox' id='{module_id}_checkbox' onclick='toggleNode(\"{module_id}\")'/> Module-{module['module_number']}: {module['module_name']}</div><br>"
+            # Redirect to the page displaying the extracted JSON content
+            return redirect(url_for('extract_text', filename='syllabus.json'))
 
-    checklist_html += "</div>"
+    return render_template('index.html')
 
-    # Add JavaScript to handle node toggling
-    net.set_options("""
-        var options = {
-            "nodes": {
-                "shape": "dot",
-                "shadow": true
-            },
-            "edges": {
-                "smooth": {
-                    "type": "continuous",
-                    "forceDirection": "none"
-                },
-                "shadow": true
-            },
-            "physics": {
-                "forceAtlas2Based": {
-                    "springLength": 200,
-                    "springConstant": 0.05,
-                    "damping": 0.4,
-                    "avoidOverlap": 1
-                },
-                "minVelocity": 0.75,
-                "solver": "forceAtlas2Based"
-            }
-        };
-        
-        function toggleNode(nodeId) {
-            var node = network.body.nodes[nodeId];
-            if (node) {
-                if (node.hidden) {
-                    node.show();
-                } else {
-                    node.hide();
-                }
-            }
-        }
-    """)
+# Route for displaying extracted text (JSON content)
+@app.route('/extract_text/<filename>')
+def extract_text(filename):
+    json_file_path = os.path.join(JSON_DIR, 'syllabus.json')
 
-    return net, checklist_html
+    try:
+        with open(json_file_path, 'r') as json_file:
+            extracted_json = json.load(json_file)
+    except Exception as e:
+        return f"Error loading JSON file: {e}"
 
-def save_visualization(json_path, filename="course_structure.html"):
-    # Load course data from JSON
-    course_data = load_course_data(json_path)
-    if not course_data:
-        return False
-    
-    # Create and save the network and checklist
-    net, checklist_html = create_interactive_graph(course_data)
-    
-    # Ensure the GRAPH_DIR exists
-    if not os.path.exists(GRAPH_DIR):
-        os.makedirs(GRAPH_DIR)
+    # Render the extracted JSON as text on the page
+    return render_template('course_structure.html')
 
-    # Join the directory and filename to form the full path
-    file_path = os.path.join(GRAPH_DIR, filename)
-    
-    # Save the graph to the specified path
-    net.save_graph(file_path)
-    
-    # Now, inject the checklist into the saved HTML file
-    with open(file_path, 'a') as file:
-        file.write(checklist_html)
-    
-    print(f"Visualization has been saved to {file_path}")
-    return True
-
-# Execute the visualization
 if __name__ == "__main__":
-    json_path = "json_format/syllabus.json"  # Specify your JSON file path
-    save_visualization(json_path)
+    app.run(debug=True)

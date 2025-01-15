@@ -64,6 +64,14 @@ def index():
             # Process the extracted text and convert it to JSON format
             syllabus_json = process_syllabus_to_json(extracted_text)
 
+            # Add "completed" key to each topic
+            for module in syllabus_json.get('modules', []):
+                for topic in module.get('topics', []):
+                    if isinstance(topic, str):  # If the topic is a string, convert it into a dictionary
+                        topic = {"name": topic, "completed": False}
+                    else:
+                        topic["completed"] = False
+
             # Save JSON to a file in the JSON_DIR
             json_file_path = os.path.join(JSON_DIR, 'syllabus.json')
             with open(json_file_path, 'w') as json_file:
@@ -77,10 +85,10 @@ def index():
 
     return render_template('index.html')
 
-# Route for displaying extracted text (JSON content)
+# Route for displaying extracted text (JSON content) and task list
 @app.route('/extract_text/<filename>')
 def extract_text(filename):
-    json_file_path = os.path.join(JSON_DIR, 'syllabus.json')
+    json_file_path = r'json_format/syllabus.json'
 
     try:
         with open(json_file_path, 'r') as json_file:
@@ -88,8 +96,37 @@ def extract_text(filename):
     except Exception as e:
         return f"Error loading JSON file: {e}"
 
-    # Render the extracted JSON as text on the page
-    return render_template('extract_text.html', extracted_json=extracted_json)
+    # Render the extracted JSON as a to-do list (checkboxes)
+    modules = extracted_json.get('modules', [])
+
+    return render_template('course_structure.html', modules=modules)
+
+# Route to update the "completed" status of a topic
+@app.route('/update_status', methods=['POST'])
+def update_status():
+    try:
+        # Load the current JSON data
+        json_file_path = r'json_format/syllabus.json'
+        with open(json_file_path, 'r') as json_file:
+            extracted_json = json.load(json_file)
+
+        # Update the status of the selected topic
+        topic_name = request.form.get('topic_name')
+        completed_status = request.form.get('completed') == 'true'
+
+        for module in extracted_json.get('modules', []):
+            for topic in module.get('topics', []):
+                if topic.get('name') == topic_name:
+                    topic['completed'] = completed_status
+
+        # Save the updated JSON data back to the file
+        with open(json_file_path, 'w') as json_file:
+            json.dump(extracted_json, json_file, indent=4)
+
+        return redirect(url_for('extract_text', filename='syllabus.json'))
+
+    except Exception as e:
+        return f"Error updating status: {e}"
 
 if __name__ == "__main__":
     app.run(debug=True)

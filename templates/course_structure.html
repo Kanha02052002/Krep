@@ -1,0 +1,167 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: #000000;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+             .wrapper{
+              display: grid;
+              grid-template-columns: 70% 30%;
+             }
+             .mcq {
+              flex: 1; /* Take available height */
+              overflow-y: auto; /* Add vertical scroll when content exceeds height */
+              padding: 20px;
+              background-color: lightyellow; /* Optional: To differentiate the MCQ section */
+          }
+  
+          .mcq h1 {
+              font-size: 24px;
+          }
+  
+          .mcq h3 {
+              font-size: 20px;
+          }
+  
+          .mcq ul {
+              list-style: none;
+              margin: 10px 0;
+          }
+  
+          .mcq li {
+              margin: 10px 0;
+          }
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body style="max-height: 100vh;">
+      <div class="wrapper">
+      <div style="position:static;">
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+      </div>
+      <div class="mcq"> 
+        <h1>{{ filename }} - Course Topics</h1>
+        {% for module in modules %}
+            <h3>{{ module['module_name'] }}</h3>
+            <ul>
+                {% for topic in module['topics'] %}
+                    <li>
+                        <input type="checkbox" name="completed" value="true" {% if topic['completed'] %}checked{% endif %}>
+                        <label>{{ topic['name'] }}</label>
+                        <input type="hidden" name="topic_name" value="{{ topic['name'] }}">
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    </div>
+    </div>
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#ff9999", "font": {"color": "#ffffff"}, "id": "DATA PRIVACY", "label": "DATA PRIVACY", "shape": "dot", "size": 50, "title": "Course Code: BCSE318L"}, {"color": "#99ff99", "font": {"color": "#ffffff"}, "id": "Module:1", "label": "Module:1\nData privacy and Importance", "shape": "dot", "size": 40, "title": "Data privacy and Importance"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:1_topic_0", "label": "Need for Sharing Data -\nMethods of Protecting Data -\nImportance of Balancing Data", "shape": "dot", "size": 30, "title": "Need for Sharing Data - Methods of Protecting Data - Importance of Balancing Data"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:1_topic_1", "label": "Privacy and Utility \u2013 Disclosure\n- Tabular Data - Micro\ndata - Approaches to Statistical", "shape": "dot", "size": 30, "title": "Privacy and Utility \u2013 Disclosure - Tabular Data - Micro data - Approaches to Statistical"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:1_topic_2", "label": "disclosure control \u2013 Ethics \u2013\nprinciples - guidelines and regulations.", "shape": "dot", "size": 30, "title": "disclosure control \u2013 Ethics \u2013 principles - guidelines and regulations."}, {"color": "#99ff99", "font": {"color": "#ffffff"}, "id": "Module:2", "label": "Module:2\nMicrodata ", "shape": "dot", "size": 40, "title": "Microdata "}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:2_topic_0", "label": "Disclosure - Disclosure risk -\nEstimating re-identification risk - Non-Perturbative\nMicro data", "shape": "dot", "size": 30, "title": "Disclosure - Disclosure risk - Estimating re-identification risk - Non-Perturbative Micro data"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:2_topic_1", "label": "masking - Perturbative Micro data\nmasking - Information loss in\nMicro data.", "shape": "dot", "size": 30, "title": "masking - Perturbative Micro data masking - Information loss in Micro data."}, {"color": "#99ff99", "font": {"color": "#ffffff"}, "id": "Module:3", "label": "Module:3\nStatic Data Anonymization on Multidimensional Data ", "shape": "dot", "size": 40, "title": "Static Data Anonymization on Multidimensional Data "}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:3_topic_0", "label": "Privacy \u2013 Preserving Methods -\nClassification of Data in a\nMultidimensional Dataset - Group-", "shape": "dot", "size": 30, "title": "Privacy \u2013 Preserving Methods - Classification of Data in a Multidimensional Dataset - Group-"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:3_topic_1", "label": "based Anonymization: k-Anonymity", "shape": "dot", "size": 30, "title": "based Anonymization:  k-Anonymity"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:3_topic_2", "label": "l-Diversity", "shape": "dot", "size": 30, "title": "l-Diversity"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:3_topic_3", "label": "t-Closeness.", "shape": "dot", "size": 30, "title": "t-Closeness."}, {"color": "#99ff99", "font": {"color": "#ffffff"}, "id": "Module:4", "label": "Module:4\nAnonymization on Complex Data Structures", "shape": "dot", "size": 40, "title": "Anonymization on Complex Data Structures"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:4_topic_0", "label": "Privacy-Preserving Graph Data", "shape": "dot", "size": 30, "title": "Privacy-Preserving Graph Data"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:4_topic_1", "label": "Privacy-Preserving Time Series Data", "shape": "dot", "size": 30, "title": "Privacy-Preserving Time Series Data"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:4_topic_2", "label": "Time Series Data", "shape": "dot", "size": 30, "title": "Time Series Data"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:4_topic_3", "label": "Protection Methods", "shape": "dot", "size": 30, "title": "Protection Methods"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:4_topic_4", "label": "Privacy Preservation of Longitudinal Data", "shape": "dot", "size": 30, "title": "Privacy Preservation of Longitudinal Data"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:4_topic_5", "label": "Privacy Preservation of", "shape": "dot", "size": 30, "title": "Privacy Preservation of"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:4_topic_6", "label": "Transaction Data.", "shape": "dot", "size": 30, "title": "Transaction Data."}, {"color": "#99ff99", "font": {"color": "#ffffff"}, "id": "Module:5", "label": "Module:5\nThreats to Anonymized Data", "shape": "dot", "size": 40, "title": "Threats to Anonymized Data"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:5_topic_0", "label": "Threats to Anonymized Data", "shape": "dot", "size": 30, "title": "Threats to Anonymized Data"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:5_topic_1", "label": "Threats to Data Structures", "shape": "dot", "size": 30, "title": "Threats to Data Structures"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:5_topic_2", "label": "Threats by Anonymization", "shape": "dot", "size": 30, "title": "Threats by Anonymization"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:5_topic_3", "label": "Techniques: Randomization", "shape": "dot", "size": 30, "title": "Techniques:     Randomization"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:5_topic_4", "label": "k-Anonymization", "shape": "dot", "size": 30, "title": "k-Anonymization"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:5_topic_5", "label": "l-Diversity", "shape": "dot", "size": 30, "title": "l-Diversity"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:5_topic_6", "label": "t-Closeness.", "shape": "dot", "size": 30, "title": "t-Closeness."}, {"color": "#99ff99", "font": {"color": "#ffffff"}, "id": "Module:6", "label": "Module:6\nDynamic Data Protection", "shape": "dot", "size": 40, "title": "Dynamic Data Protection"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:6_topic_0", "label": "Dynamic Data Protection: Tokenization", "shape": "dot", "size": 30, "title": "Dynamic Data Protection:   Tokenization"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:6_topic_1", "label": "Understanding Tokenization", "shape": "dot", "size": 30, "title": "Understanding   Tokenization"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:6_topic_2", "label": "Use Cases for", "shape": "dot", "size": 30, "title": "Use Cases for"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:6_topic_3", "label": "Dynamic Data Protection", "shape": "dot", "size": 30, "title": "Dynamic Data Protection"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:6_topic_4", "label": "Benefits of Tokenization Compared to\nOther Methods", "shape": "dot", "size": 30, "title": "Benefits of Tokenization Compared to Other Methods"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:6_topic_5", "label": "Components for Tokenization.", "shape": "dot", "size": 30, "title": "Components for Tokenization."}, {"color": "#99ff99", "font": {"color": "#ffffff"}, "id": "Module:7", "label": "Module:7\nPrivacy-Preserving Test Data Generation and Privacy ", "shape": "dot", "size": 40, "title": "Privacy-Preserving Test Data Generation and Privacy "}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:7_topic_0", "label": "Regulations", "shape": "dot", "size": 30, "title": "Regulations"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:7_topic_1", "label": "Test Data Fundamentals - Insufficiencies\nof Anonymized Test Data. Privacy\nregulations: UK", "shape": "dot", "size": 30, "title": "Test Data Fundamentals - Insufficiencies of Anonymized Test Data. Privacy regulations: UK"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:7_topic_2", "label": "Data Protection Act", "shape": "dot", "size": 30, "title": "Data Protection Act"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:7_topic_3", "label": "Swiss Data Protection Act", "shape": "dot", "size": 30, "title": "Swiss Data Protection Act"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:7_topic_4", "label": "HIPPA", "shape": "dot", "size": 30, "title": "HIPPA"}, {"color": "#9999ff", "font": {"color": "#ffffff"}, "id": "Module:7_topic_5", "label": "General Data Protection Regulation.", "shape": "dot", "size": 30, "title": "General Data Protection Regulation."}]);
+                  edges = new vis.DataSet([{"color": {"color": "gray"}, "from": "DATA PRIVACY", "length": 200, "to": "Module:1"}, {"color": {"color": "gray"}, "from": "Module:1", "length": 150, "to": "Module:1_topic_0"}, {"color": {"color": "gray"}, "from": "Module:1", "length": 150, "to": "Module:1_topic_1"}, {"color": {"color": "gray"}, "from": "Module:1", "length": 150, "to": "Module:1_topic_2"}, {"color": {"color": "gray"}, "from": "DATA PRIVACY", "length": 200, "to": "Module:2"}, {"color": {"color": "gray"}, "from": "Module:2", "length": 150, "to": "Module:2_topic_0"}, {"color": {"color": "gray"}, "from": "Module:2", "length": 150, "to": "Module:2_topic_1"}, {"color": {"color": "gray"}, "from": "DATA PRIVACY", "length": 200, "to": "Module:3"}, {"color": {"color": "gray"}, "from": "Module:3", "length": 150, "to": "Module:3_topic_0"}, {"color": {"color": "gray"}, "from": "Module:3", "length": 150, "to": "Module:3_topic_1"}, {"color": {"color": "gray"}, "from": "Module:3", "length": 150, "to": "Module:3_topic_2"}, {"color": {"color": "gray"}, "from": "Module:3", "length": 150, "to": "Module:3_topic_3"}, {"color": {"color": "gray"}, "from": "DATA PRIVACY", "length": 200, "to": "Module:4"}, {"color": {"color": "gray"}, "from": "Module:4", "length": 150, "to": "Module:4_topic_0"}, {"color": {"color": "gray"}, "from": "Module:4", "length": 150, "to": "Module:4_topic_1"}, {"color": {"color": "gray"}, "from": "Module:4", "length": 150, "to": "Module:4_topic_2"}, {"color": {"color": "gray"}, "from": "Module:4", "length": 150, "to": "Module:4_topic_3"}, {"color": {"color": "gray"}, "from": "Module:4", "length": 150, "to": "Module:4_topic_4"}, {"color": {"color": "gray"}, "from": "Module:4", "length": 150, "to": "Module:4_topic_5"}, {"color": {"color": "gray"}, "from": "Module:4", "length": 150, "to": "Module:4_topic_6"}, {"color": {"color": "gray"}, "from": "DATA PRIVACY", "length": 200, "to": "Module:5"}, {"color": {"color": "gray"}, "from": "Module:5", "length": 150, "to": "Module:5_topic_0"}, {"color": {"color": "gray"}, "from": "Module:5", "length": 150, "to": "Module:5_topic_1"}, {"color": {"color": "gray"}, "from": "Module:5", "length": 150, "to": "Module:5_topic_2"}, {"color": {"color": "gray"}, "from": "Module:5", "length": 150, "to": "Module:5_topic_3"}, {"color": {"color": "gray"}, "from": "Module:5", "length": 150, "to": "Module:5_topic_4"}, {"color": {"color": "gray"}, "from": "Module:5", "length": 150, "to": "Module:5_topic_5"}, {"color": {"color": "gray"}, "from": "Module:5", "length": 150, "to": "Module:5_topic_6"}, {"color": {"color": "gray"}, "from": "DATA PRIVACY", "length": 200, "to": "Module:6"}, {"color": {"color": "gray"}, "from": "Module:6", "length": 150, "to": "Module:6_topic_0"}, {"color": {"color": "gray"}, "from": "Module:6", "length": 150, "to": "Module:6_topic_1"}, {"color": {"color": "gray"}, "from": "Module:6", "length": 150, "to": "Module:6_topic_2"}, {"color": {"color": "gray"}, "from": "Module:6", "length": 150, "to": "Module:6_topic_3"}, {"color": {"color": "gray"}, "from": "Module:6", "length": 150, "to": "Module:6_topic_4"}, {"color": {"color": "gray"}, "from": "Module:6", "length": 150, "to": "Module:6_topic_5"}, {"color": {"color": "gray"}, "from": "DATA PRIVACY", "length": 200, "to": "Module:7"}, {"color": {"color": "gray"}, "from": "Module:7", "length": 150, "to": "Module:7_topic_0"}, {"color": {"color": "gray"}, "from": "Module:7", "length": 150, "to": "Module:7_topic_1"}, {"color": {"color": "gray"}, "from": "Module:7", "length": 150, "to": "Module:7_topic_2"}, {"color": {"color": "gray"}, "from": "Module:7", "length": 150, "to": "Module:7_topic_3"}, {"color": {"color": "gray"}, "from": "Module:7", "length": 150, "to": "Module:7_topic_4"}, {"color": {"color": "gray"}, "from": "Module:7", "length": 150, "to": "Module:7_topic_5"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"nodes": {"shape": "dot", "shadow": true}, "edges": {"smooth": {"type": "continuous", "forceDirection": "none"}, "shadow": true}, "physics": {"forceAtlas2Based": {"springLength": 200, "springConstant": 0.05, "damping": 0.4, "avoidOverlap": 1}, "minVelocity": 0.75, "solver": "forceAtlas2Based"}};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

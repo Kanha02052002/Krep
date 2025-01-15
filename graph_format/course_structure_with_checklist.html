@@ -1,0 +1,265 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Course Structure Visualization</title>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vis-network@9.1.0/dist/vis-network.min.js"></script>
+        <style>
+            #mynetwork { width: 70%; height: 750px; border: 1px solid lightgray; }
+            body { display: flex; }
+            #checklist { margin-left: 20px; }
+        </style>
+    </head>
+    <body>
+        <div id="mynetwork"></div>
+        <div id="checklist"><div style='max-width:300px; padding: 10px; border: 1px solid #ddd;'><h3>Modules and Topics</h3><strong>Module-Module:1: Fundamentals of Number Theory </strong><br>
+                <input type='checkbox' id='Module:1_topic_0' onclick="toggleNodeVisibility('Module:1_topic_0')">
+                <label for='Module:1_topic_0'> Finite Fields and Number Theory: Modular arithmetic</label><br>
+            
+                <input type='checkbox' id='Module:1_topic_1' onclick="toggleNodeVisibility('Module:1_topic_1')">
+                <label for='Module:1_topic_1'> Euclidian Algorithm</label><br>
+            
+                <input type='checkbox' id='Module:1_topic_2' onclick="toggleNodeVisibility('Module:1_topic_2')">
+                <label for='Module:1_topic_2'> Primality Testing: Fermats and Eulers theorem</label><br>
+            
+                <input type='checkbox' id='Module:1_topic_3' onclick="toggleNodeVisibility('Module:1_topic_3')">
+                <label for='Module:1_topic_3'> Chinese Reminder theorem</label><br>
+            
+                <input type='checkbox' id='Module:1_topic_4' onclick="toggleNodeVisibility('Module:1_topic_4')">
+                <label for='Module:1_topic_4'> Discrete Logarithms.</label><br>
+            <strong>Module-Module:2: Symmetric Encryption Algorithms</strong><br>
+                <input type='checkbox' id='Module:2_topic_0' onclick="toggleNodeVisibility('Module:2_topic_0')">
+                <label for='Module:2_topic_0'> Symmetric key cryptographic techniques: Introduction to Stream cipher</label><br>
+            
+                <input type='checkbox' id='Module:2_topic_1' onclick="toggleNodeVisibility('Module:2_topic_1')">
+                <label for='Module:2_topic_1'> Block cipher: DES</label><br>
+            
+                <input type='checkbox' id='Module:2_topic_2' onclick="toggleNodeVisibility('Module:2_topic_2')">
+                <label for='Module:2_topic_2'> AES</label><br>
+            
+                <input type='checkbox' id='Module:2_topic_3' onclick="toggleNodeVisibility('Module:2_topic_3')">
+                <label for='Module:2_topic_3'> IDEA</label><br>
+            
+                <input type='checkbox' id='Module:2_topic_4' onclick="toggleNodeVisibility('Module:2_topic_4')">
+                <label for='Module:2_topic_4'> Block Cipher Operation</label><br>
+            
+                <input type='checkbox' id='Module:2_topic_5' onclick="toggleNodeVisibility('Module:2_topic_5')">
+                <label for='Module:2_topic_5'> Random Bit Generation and RC4</label><br>
+            <strong>Module-Module:3: Asymmetric Encryption Algorithm and Key Exchange</strong><br>
+                <input type='checkbox' id='Module:3_topic_0' onclick="toggleNodeVisibility('Module:3_topic_0')">
+                <label for='Module:3_topic_0'> Asymmetric key cryptographic techniques: principles</label><br>
+            
+                <input type='checkbox' id='Module:3_topic_1' onclick="toggleNodeVisibility('Module:3_topic_1')">
+                <label for='Module:3_topic_1'> RSA</label><br>
+            
+                <input type='checkbox' id='Module:3_topic_2' onclick="toggleNodeVisibility('Module:3_topic_2')">
+                <label for='Module:3_topic_2'> ElGamal</label><br>
+            
+                <input type='checkbox' id='Module:3_topic_3' onclick="toggleNodeVisibility('Module:3_topic_3')">
+                <label for='Module:3_topic_3'> Elliptic Curve cryptography</label><br>
+            
+                <input type='checkbox' id='Module:3_topic_4' onclick="toggleNodeVisibility('Module:3_topic_4')">
+                <label for='Module:3_topic_4'> Homomorphic Encryption and Secret Sharing</label><br>
+            
+                <input type='checkbox' id='Module:3_topic_5' onclick="toggleNodeVisibility('Module:3_topic_5')">
+                <label for='Module:3_topic_5'> Key distribution and Key exchange protocols</label><br>
+            
+                <input type='checkbox' id='Module:3_topic_6' onclick="toggleNodeVisibility('Module:3_topic_6')">
+                <label for='Module:3_topic_6'> Diffie-Hellman Key Exchange</label><br>
+            
+                <input type='checkbox' id='Module:3_topic_7' onclick="toggleNodeVisibility('Module:3_topic_7')">
+                <label for='Module:3_topic_7'> Man-in-the-Meddle Attack</label><br>
+            <strong>Module-Module:4: Message Digest and Hash Functions </strong><br>
+                <input type='checkbox' id='Module:4_topic_0' onclick="toggleNodeVisibility('Module:4_topic_0')">
+                <label for='Module:4_topic_0'> Requirements for Hash Functions</label><br>
+            
+                <input type='checkbox' id='Module:4_topic_1' onclick="toggleNodeVisibility('Module:4_topic_1')">
+                <label for='Module:4_topic_1'> Security of Hash Functions</label><br>
+            
+                <input type='checkbox' id='Module:4_topic_2' onclick="toggleNodeVisibility('Module:4_topic_2')">
+                <label for='Module:4_topic_2'> Message Digest (MD5)</label><br>
+            
+                <input type='checkbox' id='Module:4_topic_3' onclick="toggleNodeVisibility('Module:4_topic_3')">
+                <label for='Module:4_topic_3'> Secure Hash Function (SHA)</label><br>
+            
+                <input type='checkbox' id='Module:4_topic_4' onclick="toggleNodeVisibility('Module:4_topic_4')">
+                <label for='Module:4_topic_4'> Birthday Attack</label><br>
+            
+                <input type='checkbox' id='Module:4_topic_5' onclick="toggleNodeVisibility('Module:4_topic_5')">
+                <label for='Module:4_topic_5'> HMAC</label><br>
+            <strong>Module-Module:5: Digital Signature and Authentication Protocols</strong><br>
+                <input type='checkbox' id='Module:5_topic_0' onclick="toggleNodeVisibility('Module:5_topic_0')">
+                <label for='Module:5_topic_0'> Authentication Requirements</label><br>
+            
+                <input type='checkbox' id='Module:5_topic_1' onclick="toggleNodeVisibility('Module:5_topic_1')">
+                <label for='Module:5_topic_1'> Authentication Functions</label><br>
+            
+                <input type='checkbox' id='Module:5_topic_2' onclick="toggleNodeVisibility('Module:5_topic_2')">
+                <label for='Module:5_topic_2'> Message Authentication Codes</label><br>
+            
+                <input type='checkbox' id='Module:5_topic_3' onclick="toggleNodeVisibility('Module:5_topic_3')">
+                <label for='Module:5_topic_3'> Digital Signature Authentication</label><br>
+            
+                <input type='checkbox' id='Module:5_topic_4' onclick="toggleNodeVisibility('Module:5_topic_4')">
+                <label for='Module:5_topic_4'> Authentication Protocols</label><br>
+            
+                <input type='checkbox' id='Module:5_topic_5' onclick="toggleNodeVisibility('Module:5_topic_5')">
+                <label for='Module:5_topic_5'> Digital Signature Standards</label><br>
+            
+                <input type='checkbox' id='Module:5_topic_6' onclick="toggleNodeVisibility('Module:5_topic_6')">
+                <label for='Module:5_topic_6'> RSA Digital Signature</label><br>
+            
+                <input type='checkbox' id='Module:5_topic_7' onclick="toggleNodeVisibility('Module:5_topic_7')">
+                <label for='Module:5_topic_7'> Elgamal based Digital Signature</label><br>
+            
+                <input type='checkbox' id='Module:5_topic_8' onclick="toggleNodeVisibility('Module:5_topic_8')">
+                <label for='Module:5_topic_8'> Authentication Applications: Kerberos</label><br>
+            
+                <input type='checkbox' id='Module:5_topic_9' onclick="toggleNodeVisibility('Module:5_topic_9')">
+                <label for='Module:5_topic_9'> X.509 Authentication Service</label><br>
+            
+                <input type='checkbox' id='Module:5_topic_10' onclick="toggleNodeVisibility('Module:5_topic_10')">
+                <label for='Module:5_topic_10'> Public Key Infrastructure (PKI)</label><br>
+            <strong>Module-Module:6: Transport Layer Security and IP Security</strong><br>
+                <input type='checkbox' id='Module:6_topic_0' onclick="toggleNodeVisibility('Module:6_topic_0')">
+                <label for='Module:6_topic_0'> Transport-Layer Security</label><br>
+            
+                <input type='checkbox' id='Module:6_topic_1' onclick="toggleNodeVisibility('Module:6_topic_1')">
+                <label for='Module:6_topic_1'> Secure Socket Layer(SSL)</label><br>
+            
+                <input type='checkbox' id='Module:6_topic_2' onclick="toggleNodeVisibility('Module:6_topic_2')">
+                <label for='Module:6_topic_2'> TLS</label><br>
+            
+                <input type='checkbox' id='Module:6_topic_3' onclick="toggleNodeVisibility('Module:6_topic_3')">
+                <label for='Module:6_topic_3'> IP Security: Overview: IP Security Architecture</label><br>
+            
+                <input type='checkbox' id='Module:6_topic_4' onclick="toggleNodeVisibility('Module:6_topic_4')">
+                <label for='Module:6_topic_4'> Encapsulating Payload Security</label><br>
+            <strong>Module-Module:7: E-mail, Web and System Security</strong><br>
+                <input type='checkbox' id='Module:7_topic_0' onclick="toggleNodeVisibility('Module:7_topic_0')">
+                <label for='Module:7_topic_0'> Electronic Mail Security</label><br>
+            
+                <input type='checkbox' id='Module:7_topic_1' onclick="toggleNodeVisibility('Module:7_topic_1')">
+                <label for='Module:7_topic_1'> Pretty Good Privacy (PGP)</label><br>
+            
+                <input type='checkbox' id='Module:7_topic_2' onclick="toggleNodeVisibility('Module:7_topic_2')">
+                <label for='Module:7_topic_2'> S/MIME</label><br>
+            
+                <input type='checkbox' id='Module:7_topic_3' onclick="toggleNodeVisibility('Module:7_topic_3')">
+                <label for='Module:7_topic_3'> Web Security: Web Security Considerations</label><br>
+            
+                <input type='checkbox' id='Module:7_topic_4' onclick="toggleNodeVisibility('Module:7_topic_4')">
+                <label for='Module:7_topic_4'> Secure Electronic Transaction Protocol</label><br>
+            
+                <input type='checkbox' id='Module:7_topic_5' onclick="toggleNodeVisibility('Module:7_topic_5')">
+                <label for='Module:7_topic_5'> Intruders</label><br>
+            
+                <input type='checkbox' id='Module:7_topic_6' onclick="toggleNodeVisibility('Module:7_topic_6')">
+                <label for='Module:7_topic_6'> Intrusion Detection</label><br>
+            
+                <input type='checkbox' id='Module:7_topic_7' onclick="toggleNodeVisibility('Module:7_topic_7')">
+                <label for='Module:7_topic_7'> Password Management</label><br>
+            
+                <input type='checkbox' id='Module:7_topic_8' onclick="toggleNodeVisibility('Module:7_topic_8')">
+                <label for='Module:7_topic_8'> Firewalls: Firewall Design Principles</label><br>
+            
+                <input type='checkbox' id='Module:7_topic_9' onclick="toggleNodeVisibility('Module:7_topic_9')">
+                <label for='Module:7_topic_9'> Trusted Systems.</label><br>
+            </div></div>
+        <script type="text/javascript">
+            var nodes_data = {"nodes": [], "edges": []};
+            var nodes = {};
+            var edges = {};
+            
+            // Define the node structure for modules and topics dynamically
+            nodes_data.nodes.push({id: 'Module:1', label: 'Module:1
+Fundamentals of Number Theory ', color: '#99ff99'});
+nodes_data.nodes.push({id: 'Module:1_topic_0', label: 'Finite Fields and Number Theory:
+Modular arithmetic', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:1_topic_1', label: 'Euclidian Algorithm', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:1_topic_2', label: 'Primality Testing: Fermats and Eulers
+theorem', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:1_topic_3', label: 'Chinese Reminder theorem', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:1_topic_4', label: 'Discrete Logarithms.', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:2', label: 'Module:2
+Symmetric Encryption Algorithms', color: '#99ff99'});
+nodes_data.nodes.push({id: 'Module:2_topic_0', label: 'Symmetric key cryptographic techniques: Introduction
+to Stream cipher', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:2_topic_1', label: 'Block cipher: DES', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:2_topic_2', label: 'AES', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:2_topic_3', label: 'IDEA', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:2_topic_4', label: 'Block Cipher Operation', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:2_topic_5', label: 'Random Bit Generation and RC4', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:3', label: 'Module:3
+Asymmetric Encryption Algorithm and Key Exchange', color: '#99ff99'});
+nodes_data.nodes.push({id: 'Module:3_topic_0', label: 'Asymmetric key cryptographic techniques: principles', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:3_topic_1', label: 'RSA', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:3_topic_2', label: 'ElGamal', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:3_topic_3', label: 'Elliptic Curve cryptography', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:3_topic_4', label: 'Homomorphic Encryption and Secret Sharing', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:3_topic_5', label: 'Key distribution and Key exchange
+protocols', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:3_topic_6', label: 'Diffie-Hellman Key Exchange', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:3_topic_7', label: 'Man-in-the-Meddle Attack', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:4', label: 'Module:4
+Message Digest and Hash Functions ', color: '#99ff99'});
+nodes_data.nodes.push({id: 'Module:4_topic_0', label: 'Requirements for Hash Functions', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:4_topic_1', label: 'Security of Hash Functions', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:4_topic_2', label: 'Message Digest (MD5)', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:4_topic_3', label: 'Secure Hash Function (SHA)', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:4_topic_4', label: 'Birthday Attack', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:4_topic_5', label: 'HMAC', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:5', label: 'Module:5
+Digital Signature and Authentication Protocols', color: '#99ff99'});
+nodes_data.nodes.push({id: 'Module:5_topic_0', label: 'Authentication Requirements', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:5_topic_1', label: 'Authentication Functions', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:5_topic_2', label: 'Message Authentication Codes', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:5_topic_3', label: 'Digital Signature Authentication', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:5_topic_4', label: 'Authentication Protocols', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:5_topic_5', label: 'Digital Signature Standards', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:5_topic_6', label: 'RSA Digital Signature', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:5_topic_7', label: 'Elgamal based Digital Signature', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:5_topic_8', label: 'Authentication Applications: Kerberos', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:5_topic_9', label: 'X.509 Authentication Service', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:5_topic_10', label: 'Public Key Infrastructure (PKI)', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:6', label: 'Module:6
+Transport Layer Security and IP Security', color: '#99ff99'});
+nodes_data.nodes.push({id: 'Module:6_topic_0', label: 'Transport-Layer Security', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:6_topic_1', label: 'Secure Socket Layer(SSL)', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:6_topic_2', label: 'TLS', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:6_topic_3', label: 'IP Security: Overview: IP Security
+Architecture', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:6_topic_4', label: 'Encapsulating Payload Security', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:7', label: 'Module:7
+E-mail, Web and System Security', color: '#99ff99'});
+nodes_data.nodes.push({id: 'Module:7_topic_0', label: 'Electronic Mail Security', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:7_topic_1', label: 'Pretty Good Privacy (PGP)', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:7_topic_2', label: 'S/MIME', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:7_topic_3', label: 'Web Security: Web Security Considerations', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:7_topic_4', label: 'Secure Electronic Transaction Protocol', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:7_topic_5', label: 'Intruders', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:7_topic_6', label: 'Intrusion Detection', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:7_topic_7', label: 'Password Management', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:7_topic_8', label: 'Firewalls: Firewall Design Principles', color: '#9999ff'});
+nodes_data.nodes.push({id: 'Module:7_topic_9', label: 'Trusted Systems.', color: '#9999ff'});
+
+            
+            var container = document.getElementById('mynetwork');
+            var data = { nodes: nodes_data.nodes, edges: nodes_data.edges };
+            var options = {
+                "physics": { "enabled": false }  // Disable physics
+            };
+            var network = new vis.Network(container, data, options);
+            
+            function toggleNodeVisibility(nodeId) {
+                var node = nodes[nodeId];
+                if (document.getElementById(nodeId).checked) {
+                    network.body.data.nodes.update({ id: nodeId, hidden: false });
+                } else {
+                    network.body.data.nodes.update({ id: nodeId, hidden: true });
+                }
+            }
+        </script>
+    </body>
+    </html>
+    

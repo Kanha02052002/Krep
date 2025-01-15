@@ -21,7 +21,7 @@ def load_course_data(json_path):
 
 def create_interactive_graph(data):
     # Create a new network
-    net = Network(height="750px", width="100%", bgcolor="#000000", font_color="#ffffff")
+    net = Network(height="750px", width="100%", bgcolor="#ffffff", font_color="black")
     
     # Configure physics
     net.force_atlas_2based()
@@ -120,12 +120,11 @@ def save_visualization(json_path, filename="course_structure.html"):
         os.makedirs(GRAPH_DIR)
 
     # Join the directory and filename to form the full path
-    # file_path = os.path.join(GRAPH_DIR, filename)
-    file_path1 = os.path.join('templates', filename)
+    file_path = os.path.join(GRAPH_DIR, filename)
     
     # Save the graph to the specified path
-    net.save_graph(file_path1)
-    print(f"Visualization has been saved to {file_path1}")
+    net.save_graph(file_path)
+    print(f"Visualization has been saved to {file_path}")
     return True
 
 # Execute the visualization
