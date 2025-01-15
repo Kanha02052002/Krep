@@ -1,0 +1,99 @@
+{
+    "course_code": "BCSE309L",
+    "course_title": "Cryptography and Network Security",
+    "modules": [
+        {
+            "module_number": "Module:1",
+            "module_name": "Fundamentals of Number Theory ",
+            "topics": [
+                "Finite Fields and Number Theory: Modular arithmetic",
+                "Euclidian Algorithm",
+                "Primality Testing: Fermats and Eulers theorem",
+                "Chinese Reminder theorem",
+                "Discrete Logarithms."
+            ]
+        },
+        {
+            "module_number": "Module:2",
+            "module_name": "Symmetric Encryption Algorithms",
+            "topics": [
+                "Symmetric key cryptographic techniques: Introduction to Stream cipher",
+                "Block cipher: DES",
+                "AES",
+                "IDEA",
+                "Block Cipher Operation",
+                "Random Bit Generation and RC4"
+            ]
+        },
+        {
+            "module_number": "Module:3",
+            "module_name": "Asymmetric Encryption Algorithm and Key Exchange",
+            "topics": [
+                "Asymmetric key cryptographic techniques: principles",
+                "RSA",
+                "ElGamal",
+                "Elliptic Curve cryptography",
+                "Homomorphic Encryption and Secret Sharing",
+                "Key distribution and Key exchange protocols",
+                "Diffie-Hellman Key Exchange",
+                "Man-in-the-Meddle Attack"
+            ]
+        },
+        {
+            "module_number": "Module:4",
+            "module_name": "Message Digest and Hash Functions ",
+            "topics": [
+                "Requirements for Hash Functions",
+                "Security of Hash Functions",
+                "Message Digest (MD5)",
+                "Secure Hash Function (SHA)",
+                "Birthday Attack",
+                "HMAC"
+            ]
+        },
+        {
+            "module_number": "Module:5",
+            "module_name": "Digital Signature and Authentication Protocols",
+            "topics": [
+                "Authentication Requirements",
+                "Authentication Functions",
+                "Message Authentication Codes",
+                "Digital Signature Authentication",
+                "Authentication Protocols",
+                "Digital Signature Standards",
+                "RSA Digital Signature",
+                "Elgamal based Digital Signature",
+                "Authentication Applications: Kerberos",
+                "X.509 Authentication Service",
+                "Public Key Infrastructure (PKI)"
+            ]
+        },
+        {
+            "module_number": "Module:6",
+            "module_name": "Transport Layer Security and IP Security",
+            "topics": [
+                "Transport-Layer Security",
+                "Secure Socket Layer(SSL)",
+                "TLS",
+                "IP Security: Overview: IP Security Architecture",
+                "Encapsulating Payload Security"
+            ]
+        },
+        {
+            "module_number": "Module:7",
+            "module_name": "E-mail, Web and System Security",
+            "topics": [
+                "Electronic Mail Security",
+                "Pretty Good Privacy (PGP)",
+                "S/MIME",
+                "Web Security: Web Security Considerations",
+                "Secure Electronic Transaction Protocol",
+                "Intruders",
+                "Intrusion Detection",
+                "Password Management",
+                "Firewalls: Firewall Design Principles",
+                "Trusted Systems."
+            ]
+        }
+    ]
+}

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Preview</title>
+    <style>
+        body {
+            font-family: Poppins, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        iframe {
+            width: 100%;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PDF Preview</h1>
+        <iframe src="data:application/pdf;base64,{{ base64_pdf }}"></iframe>
+
+        <a href="{{ url_for('extract_text', filename=filename) }}">Extract Text</a>
+    </div>
+</body>
+</html>
